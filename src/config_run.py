@@ -33,7 +33,7 @@ from src.environment.extractors import LSTMAgentObs
 from src.environment.visuals.nav_map_viz import NavMapViz
 
 from src.environment.scenarios.common_scenarios import envs_door, envs_hallway, envs_intersection, envs_round_about, \
-  envs_open
+  envs_open, envs_hospital_ward
 from src.environment.scenarios import CycleScenario, GraphNavScenario, ManualScenario
 from src.environment.utils.utils import DATA_FOLDER
 from src.environment.utils.evaluate_policy import evaluate_policy
@@ -327,6 +327,11 @@ def run(
     # conflict_zone = (0, 1, 1)
     # zones.append(conflict_zone)
 
+  if 'hospital_ward' in experiment_names:
+    scenario, conflict_zone = envs_hospital_ward(partially_observable=partially_observable, config_runner=True if not monitor and not local else False, all_config=monitor and not local)
+    scenarios.append(scenario)
+    zones.append(conflict_zone)
+
 
   observations = []
 
@@ -448,12 +453,32 @@ def run(
   # TODO - allow this to work for 1 and 2 agents.
   policy_algo_kwargs['policy_kwargs'] = {"features_extractor_class": LSTMAgentObs, "features_extractor_kwargs": dict(observer=observer)}
 
-  if policy_algo_sb3_contrib:
+  class BaselineModel:
+      def __init__(self, action_value=0):
+          self.action_value = action_value
+
+      def predict(self, obs, deterministic=True, **kwargs):
+          batch_size = obs.shape[0] if isinstance(obs, np.ndarray) else len(obs)
+          actions = np.full((batch_size,), self.action_value, dtype=np.int32)
+          return actions, None
+      
+      def learn(self, *args, **kwargs):
+          pass
+      
+      def save(self, *args, **kwargs):
+          pass
+          
+      def load(self, *args, **kwargs):
+          return self
+
+  if run_type == kinds.ao:
+    model = BaselineModel(action_value=0)
+  elif policy_algo_sb3_contrib:
     model = getattr(sb3c, policy_algo_name)(policy_name, env, **policy_algo_kwargs)
   else:
     model = getattr(sb3, policy_algo_name)(policy_name, env, **policy_algo_kwargs)
 
-  if continue_from:
+  if continue_from and run_type != kinds.ao:
     model = model.load(DATA_FOLDER / continue_from, env)
 
   eval_callback = EvalCallback(

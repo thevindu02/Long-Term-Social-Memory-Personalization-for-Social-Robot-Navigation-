@@ -1,6 +1,7 @@
 <package>
+  <name>social_gym</name>
   <description brief="social_gym">
-
+    Multi-agent simulator for real-world social navigation.
   </description>
   <author>Jarrett Holtz</author>
   <license>MIT License</license>

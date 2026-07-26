@@ -219,3 +219,20 @@ def envs_open(partially_observable: bool = False, config_runner: bool = False, a
     )
 
     return scenario, (12, 36, 6)
+def envs_hospital_ward(partially_observable: bool = False, config_runner: bool = False, all_config: bool = False) -> Tuple[Scenario, Tuple[int, int, int]]:
+        starts = [0, 4, 5, 6, 7, 8, 9, 10]
+        before = [1, 2, 3]
+        after = [1, 2, 3]
+        ends = [0, 4, 5, 6, 7, 8, 9, 10]
+        all_paths = [list(x) for x in product(starts, before, after, ends)]
+
+        scenario = ManualScenario(
+            f'envs/scenario/hospital_ward',
+            agent_paths=all_paths,
+            human_paths=all_paths,
+            partially_observable=partially_observable,
+            config_runner=config_runner,
+            all_config=all_config
+        )
+
+        return scenario, (2, 3, 1)

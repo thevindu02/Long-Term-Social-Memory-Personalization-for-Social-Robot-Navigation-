@@ -9,3 +9,6 @@ tmp.log
 
 .idea
 __pycache__/
+sg_env/
+*.log
+

@@ -96,7 +96,7 @@ goal_poses = {
 
 
 
-  robot_config = "config/ut_jackal_config.lua"
+  robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"
 
   laser_topic = "/Cobot/Laser"
   laser_frame = "base_laser"

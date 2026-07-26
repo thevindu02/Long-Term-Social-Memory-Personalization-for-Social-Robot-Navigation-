@@ -13,6 +13,7 @@ services:
 
   social_gym_image:
     container_name: social_gym_image
+    image: social_gym_social_gym_image
     build:
       context: ./
       dockerfile: docker/social_gym_image.Dockerfile
@@ -49,7 +50,7 @@ services:
       DISPLAY: ${DISPLAY}
       QT_X11_NO_MITSHM: 1
       XAUTHORITY: /tmp/.docker.xauth
-      ROS_MASTER_URI: http://rosmaster:113111
+      ROS_MASTER_URI: http://rosmaster:11311
     volumes:
       - src:/home/rosdev/social_gym:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

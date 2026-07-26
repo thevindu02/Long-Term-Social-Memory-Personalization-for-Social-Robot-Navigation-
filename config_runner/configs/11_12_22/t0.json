@@ -11,6 +11,6 @@
 
   "run_name": "11_12_22__repro_4/ppo",
   "run_type": "SACADRL",
-  "device": "cuda:0"
+  "device": "cpu"
 
 }

@@ -16,7 +16,7 @@
 
   "run_name": "11_20_22__eval/ppo",
   "run_type": "EO",
-  "device": "cuda:0",
+  "device": "cpu",
 
   "other_velocities_obs": true,
   "agent_velocity_obs": true,

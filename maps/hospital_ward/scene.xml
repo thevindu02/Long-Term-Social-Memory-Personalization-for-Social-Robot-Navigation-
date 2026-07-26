@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <!--Obstacles-->
+	<obstacle x1="-15.000000" y1="2.000000" x2="-9.500000" y2="2.000000"/>
+	<obstacle x1="-8.500000" y1="2.000000" x2="-0.500000" y2="2.000000"/>
+	<obstacle x1="0.500000" y1="2.000000" x2="8.500000" y2="2.000000"/>
+	<obstacle x1="9.500000" y1="2.000000" x2="15.000000" y2="2.000000"/>
+	<obstacle x1="-15.000000" y1="-2.000000" x2="-9.500000" y2="-2.000000"/>
+	<obstacle x1="-8.500000" y1="-2.000000" x2="-0.500000" y2="-2.000000"/>
+	<obstacle x1="0.500000" y1="-2.000000" x2="8.500000" y2="-2.000000"/>
+	<obstacle x1="9.500000" y1="-2.000000" x2="15.000000" y2="-2.000000"/>
+	<obstacle x1="-15.000000" y1="-2.000000" x2="-15.000000" y2="2.000000"/>
+	<obstacle x1="15.000000" y1="-2.000000" x2="15.000000" y2="2.000000"/>
+	<obstacle x1="-12.000000" y1="2.000000" x2="-12.000000" y2="7.000000"/>
+	<obstacle x1="-12.000000" y1="7.000000" x2="-6.000000" y2="7.000000"/>
+	<obstacle x1="-6.000000" y1="7.000000" x2="-6.000000" y2="2.000000"/>
+	<obstacle x1="-3.000000" y1="2.000000" x2="-3.000000" y2="7.000000"/>
+	<obstacle x1="-3.000000" y1="7.000000" x2="3.000000" y2="7.000000"/>
+	<obstacle x1="3.000000" y1="7.000000" x2="3.000000" y2="2.000000"/>
+	<obstacle x1="6.000000" y1="2.000000" x2="6.000000" y2="7.000000"/>
+	<obstacle x1="6.000000" y1="7.000000" x2="12.000000" y2="7.000000"/>
+	<obstacle x1="12.000000" y1="7.000000" x2="12.000000" y2="2.000000"/>
+	<obstacle x1="-12.000000" y1="-2.000000" x2="-12.000000" y2="-7.000000"/>
+	<obstacle x1="-12.000000" y1="-7.000000" x2="-6.000000" y2="-7.000000"/>
+	<obstacle x1="-6.000000" y1="-7.000000" x2="-6.000000" y2="-2.000000"/>
+	<obstacle x1="-3.000000" y1="-2.000000" x2="-3.000000" y2="-7.000000"/>
+	<obstacle x1="-3.000000" y1="-7.000000" x2="3.000000" y2="-7.000000"/>
+	<obstacle x1="3.000000" y1="-7.000000" x2="3.000000" y2="-2.000000"/>
+	<obstacle x1="6.000000" y1="-2.000000" x2="6.000000" y2="-7.000000"/>
+	<obstacle x1="6.000000" y1="-7.000000" x2="12.000000" y2="-7.000000"/>
+	<obstacle x1="12.000000" y1="-7.000000" x2="12.000000" y2="-2.000000"/>
+
+    <!--Way Points-->
+{% for i in range(position_count) %}
+    <waypoint id="{{ i }}" x="{{ positions[i][0] }}" y = "{{ positions[i][1] }}" r="1" b="0.1"/>
+{% endfor %}
+
+{% for i in range(nav_count) %}
+    <waypoint id="n{{ i }}" x="{{ nav_map[i][0] }}" y = "{{ nav_map[i][1] }}" r="1" b="0.1"/>
+{% endfor %}
+
+    <!-- This Robot Goal Doesn't Matter, but is Required -->
+  <waypoint id="robot_goal" x="{{ robot_end[0] }}" y="{{ robot_end[1] }}" r="2"/>
+  <waypoint id="robot_start" x="{{ robot_start[0] }}" y="{{ robot_start[1] }}" r="2"/>
+
+  <agent x="{{ robot_start[0] }}" y="{{ robot_start[1] }}" n="1" dx="0" dy="0" type="2">
+    <addwaypoint id="robot_start"/>
+    <addwaypoint id="robot_goal"/>
+  </agent>
+
+  {% for human_position in human_positions %}
+  <agent x="{{ human_position[0] }}" y="{{ human_position[1] }}" n="1" dx="{{ dev }}" dy="{{ dev }}" type="0">
+    {% for i in range(3, human_position|length) %}
+    <addwaypoint id="n{{human_position[i]}}" />
+    {% endfor %}
+  </agent>
+  {% endfor %}
+
+</scenario>

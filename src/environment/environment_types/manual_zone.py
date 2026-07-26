@@ -274,7 +274,7 @@ class RvisZoneVisualization:
         self.marker.color.r = 0.0
         self.marker.color.g = 1.0
         self.marker.color.b = 0.0
-        self.marker.color.a = 0.5
+        self.marker.color.a = 0.0
 
         # Set the pose of the marker
         self.marker.pose.position.x = (zone['upper_right'][0] + zone['upper_left'][0])/2

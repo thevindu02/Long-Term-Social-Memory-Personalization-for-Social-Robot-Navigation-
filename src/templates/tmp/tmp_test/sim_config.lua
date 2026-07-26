@@ -32,7 +32,7 @@ goal_poses = {
 
 
   num_humans = {{ human_count }}
-  human_config = "../../config/gym_gen/humans.lua"
+  human_config = "/home/rosdev/social_gym/config/gym_gen/humans.lua"
   
   partially_observable = {{ partially_observable }}
 
@@ -97,7 +97,7 @@ goal_poses = {
     {% endfor %}
   }
 
-  robot_config = "config/ut_jackal_config.lua"
+  robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"
 
   laser_topic = "/Cobot/Laser"
   laser_frame = "base_laser"

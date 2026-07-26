@@ -10,16 +10,29 @@ function Vector2(x, y)
   function DegToRad(d)
     return math.pi * d / 180
   end
-map_name =  "maps/closed/door/t1/closed/door/t1.vectormap.txt"-- Simulator starting location.
-
+map_name =  "/home/rosdev/social_gym/submodules/ut_multirobot_sim/maps/envs/scenario/hospital_ward/hospital_ward.vectormap.txt"
+nav_map_name =  "envs/scenario/hospital_ward"
+-- Simulator starting location.
 start_poses = {
     
         {
-             -5.0743231773376465, 8.123725891113281, 0.0
+             0.0, 4.5, 0.0
         },
     
         {
-             -5.549050331115723, 1.723697543144226, 0.0
+             9.0, -4.5, 0.0
+        },
+    
+        {
+             -9.0, 4.5, 0.0
+        },
+    
+        {
+             14.0, 0.0, 0.0
+        },
+    
+        {
+             9.0, 4.5, 0.0
         },
     
 }
@@ -28,20 +41,35 @@ start_poses = {
 goal_poses = {
     
         {
-             4.572605609893799, 8.539844512939453, 0.0
+             -14.0, 0.0, 0.0
         },
     
         {
-             4.572605609893799, 8.539844512939453, 0.0
+             14.0, 0.0, 0.0
+        },
+    
+        {
+             0.0, 4.5, 0.0
+        },
+    
+        {
+             -9.0, -4.5, 0.0
+        },
+    
+        {
+             -9.0, 4.5, 0.0
         },
     
 }
 
+
   num_humans = 0
   human_config = "/home/rosdev/social_gym/config/gym_gen/humans.lua"
+  
+  partially_observable = False
 
-  door_config_list = {
-    -- "/home/jaholtz/code/amrl_maps/GDC1/door_list.lua"
+  hospital_ward_config_list = {
+    -- "/home/jaholtz/code/amrl_maps/GDC1/hospital_ward_list.lua"
   }
 
   -- Time-step for simulation.
@@ -91,8 +119,19 @@ goal_poses = {
   -- robot_config = "config/bwibot_config.lua"
   -- robot_type = RobotType.OMNIDIRECTIONAL_DRIVE
   -- robot_config = "config/cobot_config.lua"
-
   robot_types = {
+    
+        
+                RobotType.DIFF_DRIVE,
+        
+    
+        
+                RobotType.DIFF_DRIVE,
+        
+    
+        
+                RobotType.DIFF_DRIVE,
+        
     
         
                 RobotType.DIFF_DRIVE,
@@ -104,11 +143,8 @@ goal_poses = {
     
   }
 
-
-
-  robot_config = "config/ut_jackal_config.lua"
+  robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"
 
   laser_topic = "/Cobot/Laser"
   laser_frame = "base_laser"
-
   

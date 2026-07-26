@@ -1,18 +1,18 @@
 FROM ros:noetic
 
 RUN apt-get update \
-  && apt-get install -y ssh \
-      build-essential \
-      gcc \
-      g++ \
-      gdb \
-      clang \
-      cmake \
-      rsync \
-      tar \
-      python \
-      wget \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y ssh \
+    build-essential \
+    gcc \
+    g++ \
+    gdb \
+    clang \
+    cmake \
+    rsync \
+    tar \
+    python \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Necessary Programs
 RUN apt-get update && apt-get install -y git openssh-server ros-noetic-tf \
@@ -66,7 +66,8 @@ RUN pip3 install tensorboardX
 RUN apt-get update --fix-missing
 RUN apt-get install -y ros-noetic-cv-bridge
 RUN pip3 install opencv-python-headless==4.5.2.52
-RUN pip3 install moviepy
+RUN pip3 install --upgrade pip
+RUN pip3 install moviepy==1.0.3
 
 RUN apt-get -y install gdb
 
@@ -77,8 +78,8 @@ RUN ( \
     echo 'PermitRootLogin yes'; \
     echo 'PasswordAuthentication yes'; \
     echo 'Subsystem sftp /usr/lib/openssh/sftp-server'; \
-  ) > /etc/ssh/sshd_config_test_clion \
-  && mkdir /run/sshd
+    ) > /etc/ssh/sshd_config_test_clion \
+    && mkdir /run/sshd
 
 RUN apt-get install -y libtf2-ros-dev
 

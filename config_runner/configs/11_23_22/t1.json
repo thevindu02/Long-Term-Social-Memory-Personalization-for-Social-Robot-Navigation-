@@ -14,7 +14,7 @@
 
   "run_name": "11_23_22/10",
   "run_type": "EO",
-  "device": "cuda:0",
+  "device": "cpu",
 
   "enforced_order_weak_signal_out_of_zone": true,
   "enforced_order_reward": 10,

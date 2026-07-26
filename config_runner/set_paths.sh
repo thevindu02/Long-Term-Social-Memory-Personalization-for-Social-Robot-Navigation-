@@ -13,6 +13,6 @@ export ROS_PACKAGE_PATH=/home/rosdev/social_gym/submodules/graph_navigation:$ROS
 export ROS_PACKAGE_PATH=/home/rosdev/social_gym/submodules/ut_multirobot_sim/src/state_switcher_rviz_plugin:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=/home/rosdev/social_gym/submodules/ut_multirobot_sim/pedestrian_simulation/:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=/home/rosdev/social_gym/submodules/ut_multirobot_sim/src/ros_social_gym:$ROS_PACKAGE_PATH
-export ROS_PACKAGE_PATH=/home/rosdev/social_gym/:$ROS_PACKAGE_PATH
+export ROS_PACKAGE_PATH=/home/rosdev/social_gym:$ROS_PACKAGE_PATH
 
 export PYTHONPATH=$PYTHONPATH:/home/rosdev/social_gym

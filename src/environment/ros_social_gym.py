@@ -259,12 +259,24 @@ class RosSocialEnv(ParallelEnv, EzPickle):
         return None
 
     def default_action(self):
-        actions = [[0] * self.curr_num_agents, [0.] * self.curr_num_agents,  [0.] * self.curr_num_agents, [0.] * self.curr_num_agents, [-1.] * self.curr_num_agents, [f'{i}' for i in range(self.curr_num_agents)], [AgentColor() for i in range(self.curr_num_agents)]]
+        actions = [
+            [0] * self.curr_num_agents,
+            [0.] * self.curr_num_agents,
+            [0.] * self.curr_num_agents,
+            [0.] * self.curr_num_agents,
+            [-1.] * self.curr_num_agents,
+            [-999.0] * self.curr_num_agents,
+            [-999.0] * self.curr_num_agents,
+            [-999.0] * self.curr_num_agents,
+            [-999.0] * self.curr_num_agents,
+            [f'{i}' for i in range(self.curr_num_agents)],
+            [AgentColor() for i in range(self.curr_num_agents)]
+        ]
         # actions = [[0] * self.curr_num_agents, [0.] * self.curr_num_agents,  [0.] * self.curr_num_agents, [0.] * self.curr_num_agents, [f'{i}' for i in range(self.curr_num_agents)], [AgentColor() for i in range(self.curr_num_agents)]]
         return actions
 
     def sim_step(self, args):
-        return self.env_response_type.process(self.utmrs_service.step(*args))
+        return self.env_response_type.process(self.utmrs_service.step(*args), self)
 
     def seed(self, seed=None):
         pass
@@ -312,6 +324,8 @@ class RosSocialEnv(ParallelEnv, EzPickle):
                 # if self.debug:
                 #     print(f'Env Resp Length: {len(environment_responses)}')
 
+                print("LEN ENV:", len(environment_responses), "CURR:", self.curr_num_agents, flush=True)
+                print("COLLISIONS:", [env_resp.collision for env_resp in environment_responses], "DONE:", [env_resp.done for env_resp in environment_responses], flush=True)
                 if len(environment_responses) == self.curr_num_agents:
                     break
 
@@ -354,14 +368,16 @@ class RosSocialEnv(ParallelEnv, EzPickle):
         # if self.debug:
         #     print(f'Agents: {len(self.agents)}')
 
-        actions = np.zeros(len(self.agents), dtype=np.int32)
-        x_vels = np.zeros(len(self.agents), dtype=float)
-        y_vels = np.zeros(len(self.agents), dtype=float)
-        angle_vels = np.zeros(len(self.agents), dtype=float)
-        for i, agent in enumerate(self.agents):
+        actions = np.zeros(self.curr_num_agents, dtype=np.int32)
+        x_vels = np.zeros(self.curr_num_agents, dtype=float)
+        y_vels = np.zeros(self.curr_num_agents, dtype=float)
+        angle_vels = np.zeros(self.curr_num_agents, dtype=float)
+        
+        # We must iterate over all agents that exist in the simulator
+        active_agents = self.real_possible_agents[:self.curr_num_agents]
+        for i, agent in enumerate(active_agents):
             if agent in action_dict:
                 actions[i] = action_dict[agent]
-                # actions[i] = -1
                 x_vels[i] = 1.
                 y_vels[i] = 1.
                 angle_vels[i] = 1.
@@ -369,8 +385,8 @@ class RosSocialEnv(ParallelEnv, EzPickle):
             if self.debug:
                 actions[i] = 0
 
-        total_rewards = [0. if len(self.last_reward_maps) == 0 else sum([v for v in (self.last_reward_maps[i].values() if len(self.last_reward_maps) > i else [0])]) for i in range(len(actions))]
-        messages = [f'{i}' for i in range(len(actions))]
+        total_rewards = [0. if len(self.last_reward_maps) == 0 else sum([v for v in (self.last_reward_maps[i].values() if len(self.last_reward_maps) > i else [0])]) for i in range(self.curr_num_agents)]
+        messages = [f'{i}' for i in range(self.curr_num_agents)]
 
         if len(self.last_obs_maps) > 0:
             for idx, m in enumerate(self.last_obs_maps):
@@ -380,21 +396,34 @@ class RosSocialEnv(ParallelEnv, EzPickle):
                     messages[idx] = f"{m['manual_zone_agent_zone_priority_order'][0]}"
 
 
-        # max_speeds = [min(max(1 / (x.get('manual_zone_agent_zone_priority_order', [-2.])[0] + 1), -1.), 1.) for x in self.last_obs_maps]
-        # max_speeds = [min(max(2 - (x.get('manual_zone_agent_zone_priority_order', [0.])[0] * 0.5), -1.), 2.) for x in self.last_obs_maps]
-        max_speeds = []
-        if len(max_speeds) == 0:
-            max_speeds = [-1.] * self.curr_num_agents
+        max_speeds = [-999.0] * self.curr_num_agents
+        
+        # We need to decouple the robot (index 0) from humans (index 1+) so the LLM only tunes the robot later.
+        # For now, both robot and humans share the same baseline tuning, but they are stored separately.
+        obstacle_margins = [0.2] * self.curr_num_agents
+        max_clearances = [2.2] * self.curr_num_agents
+        clearance_weights = [-999.0] * self.curr_num_agents
+        carrot_dists = [-999.0] * self.curr_num_agents
+            
         environment_responses = self.sim_step([
-            actions,
-            x_vels,
-            y_vels,
-            angle_vels,
+            actions.tolist(),
+            x_vels.tolist(),
+            y_vels.tolist(),
+            angle_vels.tolist(),
             max_speeds,
+            obstacle_margins,
+            max_clearances,
+            clearance_weights,
+            carrot_dists,
             messages,
-            [AgentColor(reward=total_rewards[i]) for i in range(len(self.agents))]
+            [AgentColor(reward=total_rewards[i]) for i in range(self.curr_num_agents)]
         ])
-        observations, observation_maps = self.make_observation(environment_responses)
+        
+        # We need to map the full responses array back to ONLY the active self.agents!
+        active_indices = [self.real_possible_agents.index(agent) for agent in self.agents]
+        filtered_responses = [environment_responses[i] for i in active_indices]
+        
+        observations, observation_maps = self.make_observation(filtered_responses)
         rewards, reward_maps = self.calculate_reward(observation_maps)
 
         self.last_obs_maps = observation_maps

@@ -29,7 +29,7 @@ function Vector2(x, y)
   }
 
   num_humans = {{ human_count }}
-  human_config = "../../config/gym_gen/humans.lua"
+  human_config = "/home/rosdev/social_gym/config/gym_gen/humans.lua"
 
   door_config_list = {
     -- "/home/jaholtz/code/amrl_maps/GDC1/door_list.lua"
@@ -85,7 +85,7 @@ function Vector2(x, y)
   robot_types = {
     RobotType.DIFF_DRIVE
   }
-  robot_config = "config/ut_jackal_config.lua"
+  robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"
 
   laser_topic = "/Cobot/Laser"
   laser_frame = "base_laser"

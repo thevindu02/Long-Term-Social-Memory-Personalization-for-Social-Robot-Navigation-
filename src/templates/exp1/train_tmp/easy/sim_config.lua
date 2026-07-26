@@ -28,7 +28,7 @@ map_name =  "maps/exp1/train/easy/exp1/train/easy.vectormap.txt"-- Simulator sta
   }
 
   num_humans = {{ human_count }}
-  human_config = "../../config/gym_gen/humans.lua"
+  human_config = "/home/rosdev/social_gym/config/gym_gen/humans.lua"
 
   door_config_list = {
     -- "/home/jaholtz/code/amrl_maps/GDC1/door_list.lua"
@@ -84,7 +84,7 @@ map_name =  "maps/exp1/train/easy/exp1/train/easy.vectormap.txt"-- Simulator sta
   robot_types = {
     RobotType.DIFF_DRIVE
   }
-  robot_config = "config/ut_jackal_config.lua"
+  robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"
 
   laser_topic = "/Cobot/Laser"
   laser_frame = "base_laser"
