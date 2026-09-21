@@ -236,3 +236,19 @@ def envs_hospital_ward(partially_observable: bool = False, config_runner: bool =
         )
 
         return scenario, (2, 3, 1)
+
+def envs_gdc1(partially_observable: bool = False, config_runner: bool = False, all_config: bool = False) -> Tuple[Scenario, Tuple[int, int, int]]:
+        starts = list(range(77))
+        ends = list(range(77))
+        all_paths = [[s, e] for s in starts for e in ends if s != e]
+
+        scenario = ManualScenario(
+            f'envs/scenario/GDC1',
+            agent_paths=all_paths,
+            human_paths=all_paths,
+            partially_observable=partially_observable,
+            config_runner=config_runner,
+            all_config=all_config
+        )
+
+        return scenario, (2, 3, 1)

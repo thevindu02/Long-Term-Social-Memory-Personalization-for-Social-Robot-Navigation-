@@ -14,51 +14,27 @@ map_name =  "/home/rosdev/social_gym/submodules/ut_multirobot_sim/maps/envs/scen
 nav_map_name =  "GDC1"
 -- Simulator starting location.
 start_poses = {
-    
+    {% for i in range(robot_count) %}
         {
-             -35.86199951171875, 17.656099319458008, 0.0
+             {{ robot_start[i][0] }}, {{ robot_start[i][1] }}, {{ robot_start[i][2] }}
         },
-    
-        {
-             -18.908700942993164, 6.29203987121582, 0.0
-        },
-    
-        {
-             23.659799575805664, 7.108550071716309, 0.0
-        },
-    
-        {
-             -29.758800506591797, 4.355400085449219, 0.0
-        },
-    
+    {% endfor %}
 }
 
 
 goal_poses = {
-    
+    {% for i in range(robot_count) %}
         {
-             39.38140106201172, 21.204500198364258, 0.0
+             {{ robot_end[i][0] }}, {{ robot_end[i][1] }}, {{ robot_end[i][2] }}
         },
-    
-        {
-             0.7339730262756348, 8.647760391235352, 0.0
-        },
-    
-        {
-             13.835599899291992, 21.237499237060547, 0.0
-        },
-    
-        {
-             15.182299613952637, 6.621200084686279, 0.0
-        },
-    
+    {% endfor %}
 }
 
 
-  num_humans = 0
+  num_humans = {{ human_count }}
   human_config = "/home/rosdev/social_gym/config/gym_gen/humans.lua"
   
-  partially_observable = False
+  partially_observable = {{ partially_observable }}
 
   GDC1_config_list = {
     -- "/home/jaholtz/code/amrl_maps/GDC1/GDC1_list.lua"
@@ -112,23 +88,13 @@ goal_poses = {
   -- robot_type = RobotType.OMNIDIRECTIONAL_DRIVE
   -- robot_config = "config/cobot_config.lua"
   robot_types = {
-    
-        
+    {% for i in range(robot_count) %}
+        {% if i+1 < robot_count %}
                 RobotType.DIFF_DRIVE,
-        
-    
-        
-                RobotType.DIFF_DRIVE,
-        
-    
-        
-                RobotType.DIFF_DRIVE,
-        
-    
-        
+        {% else %}
                 RobotType.DIFF_DRIVE
-        
-    
+        {% endif %}
+    {% endfor %}
   }
 
   robot_config = "/home/rosdev/social_gym/submodules/ut_multirobot_sim/config/ut_jackal_config.lua"

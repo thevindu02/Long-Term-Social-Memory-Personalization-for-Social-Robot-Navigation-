@@ -33,7 +33,7 @@ from src.environment.extractors import LSTMAgentObs
 from src.environment.visuals.nav_map_viz import NavMapViz
 
 from src.environment.scenarios.common_scenarios import envs_door, envs_hallway, envs_intersection, envs_round_about, \
-  envs_open, envs_hospital_ward
+  envs_open, envs_hospital_ward, envs_gdc1
 from src.environment.scenarios import CycleScenario, GraphNavScenario, ManualScenario
 from src.environment.utils.utils import DATA_FOLDER
 from src.environment.utils.evaluate_policy import evaluate_policy
@@ -329,6 +329,11 @@ def run(
 
   if 'hospital_ward' in experiment_names:
     scenario, conflict_zone = envs_hospital_ward(partially_observable=partially_observable, config_runner=True if not monitor and not local else False, all_config=monitor and not local)
+    scenarios.append(scenario)
+    zones.append(conflict_zone)
+
+  if 'gdc1' in experiment_names:
+    scenario, conflict_zone = envs_gdc1(partially_observable=partially_observable, config_runner=True if not monitor and not local else False, all_config=monitor and not local)
     scenarios.append(scenario)
     zones.append(conflict_zone)
 
