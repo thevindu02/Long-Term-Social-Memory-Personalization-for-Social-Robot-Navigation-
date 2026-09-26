@@ -1,0 +1,17 @@
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/launch/env_launch.py
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/worlds/proxy_map.sdf
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/ament_index/resource_index/package_run_dependencies/social_nav_env
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/ament_index/resource_index/parent_prefix_path/social_nav_env
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/environment/ament_prefix_path.sh
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/environment/ament_prefix_path.dsv
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/environment/path.sh
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/environment/path.dsv
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/local_setup.bash
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/local_setup.sh
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/local_setup.zsh
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/local_setup.dsv
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/package.dsv
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/ament_index/resource_index/packages/social_nav_env
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/cmake/social_nav_envConfig.cmake
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/cmake/social_nav_envConfig-version.cmake
+/home/rosdev/gazebo_workspace/install/social_nav_env/share/social_nav_env/package.xml

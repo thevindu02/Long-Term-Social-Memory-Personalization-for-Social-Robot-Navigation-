@@ -1,0 +1,241 @@
+      <link name="north_corr_left">
+        <pose>-2 10 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="north_corr_right">
+        <pose>2 10 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="south_corr_left">
+        <pose>-2 -10 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="south_corr_right">
+        <pose>2 -10 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="east_corr_top">
+        <pose>10 2 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="east_corr_bot">
+        <pose>10 -2 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="west_corr_top">
+        <pose>-10 2 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="west_corr_bot">
+        <pose>-10 -2 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_nw">
+        <pose>-3.5 3.5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>3 3 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>3 3 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_nw_h">
+        <pose>-3.5 5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_nw_v">
+        <pose>-5 3.5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_ne_h">
+        <pose>3.5 5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_ne_v">
+        <pose>5 3.5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_sw_h">
+        <pose>-3.5 -5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_sw_v">
+        <pose>-5 -3.5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_se_h">
+        <pose>3.5 -5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>3 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="hub_se_v">
+        <pose>5 -3.5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 3 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="room_ne_top">
+        <pose>7 15 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>10 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="room_ne_right">
+        <pose>12 10 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 10 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="room_ne_door_wall1">
+        <pose>4.5 5 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>5 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>5 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="north_end">
+        <pose>0 15 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="south_end">
+        <pose>0 -15 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>4 0.2 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="east_end">
+        <pose>15 0 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 4 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 4 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+      <link name="west_end">
+        <pose>-15 0 1 0 0 0</pose>
+        <collision name="col">
+          <geometry><box><size>0.2 4 2</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>0.2 4 2</size></box></geometry>
+          <material><ambient>0.6 0.6 0.6 1</ambient></material>
+        </visual>
+      </link>
+

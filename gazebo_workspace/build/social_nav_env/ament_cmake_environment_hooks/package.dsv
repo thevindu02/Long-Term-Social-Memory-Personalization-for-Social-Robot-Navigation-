@@ -1,0 +1,4 @@
+source;share/social_nav_env/local_setup.bash
+source;share/social_nav_env/local_setup.dsv
+source;share/social_nav_env/local_setup.sh
+source;share/social_nav_env/local_setup.zsh
