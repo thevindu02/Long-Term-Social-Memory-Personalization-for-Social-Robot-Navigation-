@@ -1,0 +1,12 @@
+ M src/HuNavActorPlugin_fortress.cpp
+ M src/HuNavSystemPlugin_fortress.cpp
+ M src/WorldGenerator.cpp
+?? behavior_trees/proxy_agents__agent_1_bt.xml
+?? behavior_trees/proxy_agents__agent_2_bt.xml
+?? behavior_trees/proxy_agents__agent_3_bt.xml
+?? behavior_trees/proxy_agents__agent_4_bt.xml
+?? behavior_trees/proxy_agents__agent_5_bt.xml
+?? behavior_trees/proxy_agents__agent_6_bt.xml
+?? behavior_trees/proxy_agents__agent_7_bt.xml
+?? behavior_trees/proxy_agents__agent_8_bt.xml
+?? scenarios/proxy_agents.yaml

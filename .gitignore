@@ -19,3 +19,11 @@ gazebo_workspace/frames_*
 __pycache__/
 *.pyc
 gazebo_workspace/src/social_nav_env/worlds/models/aws_robomaker_*/
+gazebo_workspace/sim_record*/
+gazebo_workspace/*.mp4
+gazebo_workspace/my_awesome_demo/
+gazebo_workspace/src/BehaviorTree.CPP/
+gazebo_workspace/src/hunav_gazebo_fortress_wrapper/
+gazebo_workspace/src/hunav_sim/
+gazebo_workspace/src/lightsfm/
+gazebo_workspace/src/people/

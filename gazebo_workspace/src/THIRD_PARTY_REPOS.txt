@@ -1,0 +1,5 @@
+]633;E;for d in BehaviorTree.CPP hunav_gazebo_fortress_wrapper hunav_sim lightsfm people;4f31668f-75f8-47c2-b2f1-1e4f54c0c726]633;CBehaviorTree.CPP https://github.com/BehaviorTree/BehaviorTree.CPP.git db5789eaabc49c0c12692437bb50e5b3cc26153b
+hunav_gazebo_fortress_wrapper https://github.com/robotics-upo/hunav_gazebo_fortress_wrapper.git 41f97f764df00303a85227911ec8173f0c25c758
+hunav_sim https://github.com/robotics-upo/hunav_sim.git 35c2d81fc0e8166a3d124558fd718dd03e8a914c
+lightsfm https://github.com/robotics-upo/lightsfm.git b30327cca189af2fb90443a5d0040cceb46d7195
+people https://github.com/wg-perception/people.git 0ae47f6e0208cedd84d19d066743fdc1d05fcafa

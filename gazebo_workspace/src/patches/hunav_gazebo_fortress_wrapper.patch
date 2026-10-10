@@ -1,0 +1,118 @@
+diff --git a/src/HuNavActorPlugin_fortress.cpp b/src/HuNavActorPlugin_fortress.cpp
+index 0c0dee2..5c10222 100644
+--- a/src/HuNavActorPlugin_fortress.cpp
++++ b/src/HuNavActorPlugin_fortress.cpp
+@@ -798,29 +798,6 @@ void HuNavActorPluginIGN::getHumanObstacles(const gz::sim::EntityComponentManage
+         //ignmsg << "Closest point on bounding box: " << closest_obstacle << std::endl;
+       }
+     }
+-    else 
+-    {
+-      // if the entity has no geometry component, we can just use the center position
+-      // and we build a default small bounding box around it.  
+-      //ignmsg << "Entity " << obs_name->Data() << " has no Geometry component" << std::endl;
+-      auto default_size = gz::math::Vector3d(0.35, 0.35, 1.0);
+-      gz::math::AxisAlignedBox obs_bb = gz::math::AxisAlignedBox(
+-        obs_pose.Pos() - default_size / 2,
+-        obs_pose.Pos() + default_size / 2
+-      );
+-      //double distance = aabb.Distance(act_aabb);
+-      //double distance = CalculateDistance(obs_bb, actor_bb);
+-      // Compute the closest point on the bounding box to the actor
+-      auto closest_point = ClosestPointOnBox(actor_pose.Pos(), obs_bb);
+-      double distance = (closest_point - actor_pose.Pos()).Length();
+-      //ignmsg << "Distance to the obstacle: " << distance << " m" << std::endl;
+-      if(distance < minDist)
+-      {
+-        minDist = distance;
+-        closest_obstacle = closest_point;
+-        //ignmsg << "Closest point on bounding box: " << closest_obstacle << std::endl;
+-      }
+-    }
+   }
+ 
+   // we do not consider obstacles further than 10 m
+diff --git a/src/HuNavSystemPlugin_fortress.cpp b/src/HuNavSystemPlugin_fortress.cpp
+index 426261f..b8971ca 100644
+--- a/src/HuNavSystemPlugin_fortress.cpp
++++ b/src/HuNavSystemPlugin_fortress.cpp
+@@ -676,9 +676,14 @@ void HuNavSystemPluginIGN::getObstacles(const gz::sim::EntityComponentManager& _
+         if (geometry->Data().Type() == sdf::GeometryType::BOX)
+         {
+           auto box = geometry->Data().BoxShape();
++          gz::math::Vector3d size = box->Size();
++          double yaw = obs_pose.Rot().Yaw();
++          double sx = std::abs(size.X() * std::cos(yaw)) + std::abs(size.Y() * std::sin(yaw));
++          double sy = std::abs(size.X() * std::sin(yaw)) + std::abs(size.Y() * std::cos(yaw));
++          gz::math::Vector3d new_size(sx, sy, size.Z());
+           obs_bb = gz::math::AxisAlignedBox(
+-            obs_pose.Pos() - box->Size() / 2,
+-            obs_pose.Pos() + box->Size() / 2
++            obs_pose.Pos() - new_size / 2.0,
++            obs_pose.Pos() + new_size / 2.0
+           );
+         }
+         else if (geometry->Data().Type() == sdf::GeometryType::SPHERE)
+@@ -726,34 +731,6 @@ void HuNavSystemPluginIGN::getObstacles(const gz::sim::EntityComponentManager& _
+           pedestrians_[p.first].closest_obs.push_back(point);
+         }
+       }
+-      else 
+-      {
+-        // if the entity has no geometry component, we can just use the center position
+-        // to build a default small bounding box around it, and we pray.  
+-        //ignmsg << "Entity " << obs_name->Data() << " has no Geometry component" << std::endl;
+-        auto default_size = gz::math::Vector3d(0.35, 0.35, 1.0);
+-        gz::math::AxisAlignedBox obs_bb = gz::math::AxisAlignedBox(
+-          obs_pose.Pos() - default_size / 2,
+-          obs_pose.Pos() + default_size / 2
+-        );
+-        //double distance = aabb.Distance(act_aabb);
+-        //double distance = CalculateDistance(obs_bb, actor_bb);
+-        // Compute the closest point on the bounding box to the actor
+-        auto closest_point = ClosestPointOnBox(actor_pose.Pos(), obs_bb);
+-        double distance = (closest_point - actor_pose.Pos()).Length();
+-        //ignmsg << "Distance to the obstacle: " << distance << " m" << std::endl;
+-        if(distance < minDist)
+-        {
+-          //minDist = distance;
+-          //closest_obstacle = closest_point;
+-          //ignmsg << "Closest point on bounding box: " << closest_obstacle << std::endl;
+-          geometry_msgs::msg::Point point;
+-          point.x = closest_point.X();
+-          point.y = closest_point.Y();
+-          point.z = 0.0;
+-          pedestrians_[p.first].closest_obs.push_back(point);
+-        }
+-      }
+     }
+     firstObstaclePrint_ = false;
+ 
+@@ -1328,7 +1305,7 @@ void HuNavSystemPluginIGN::PreUpdate(const gz::sim::UpdateInfo& _info, gz::sim::
+   builtin_interfaces::msg::Time ros_time;
+   ros_time.sec = static_cast<int32_t>(simTime.count());
+   ros_time.nanosec = static_cast<uint32_t>(simTimeNsec.count());
+-  agents.header.stamp = this->rosnode_->get_clock()->now(); //ros_time;
++  agents.header.stamp = ros_time;
+   std::vector<hunav_msgs::msg::Agent> vector;
+   vector.reserve(pedestrians_.size()); // Reserve space to avoid multiple allocations
+   for (const auto& pair : pedestrians_)
+diff --git a/src/WorldGenerator.cpp b/src/WorldGenerator.cpp
+index 13e3bf2..dd565d4 100755
+--- a/src/WorldGenerator.cpp
++++ b/src/WorldGenerator.cpp
+@@ -346,10 +346,10 @@ bool WorldGenerator::processXML()
+   //std::cout << "Gazebo Physics written in file ..." << std::endl;
+ 
+   // CREATE ROS2 PLUGINS TAGS
+-  if(!writeRos2Plugins(doc))
+-  {
+-    return false;
+-  }
++  // if(!writeRos2Plugins(doc))
++  // {
++  //   return false;
++  // }
+   //std::cout << "ROS2 plugins written in file ..." << std::endl;
+ 
+   // CREATE ACTORS

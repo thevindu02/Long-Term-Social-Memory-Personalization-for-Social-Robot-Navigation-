@@ -1,0 +1,84 @@
+diff --git a/include/sfm.hpp b/include/sfm.hpp
+index 54130af..068bda4 100644
+--- a/include/sfm.hpp
++++ b/include/sfm.hpp
+@@ -205,30 +205,41 @@ inline void SocialForceModel::computeObstacleForce(Agent &agent,
+     agent.forces.obstacleForce.set(0, 0);
+     for (unsigned i = 0; i < agent.obstacles1.size(); i++) {
+       utils::Vector2d minDiff = agent.position - agent.obstacles1[i];
+-      double distance = minDiff.norm() - agent.radius;
+-      agent.forces.obstacleForce +=
+-          agent.params.forceFactorObstacle *
+-          std::exp(-distance / agent.params.forceSigmaObstacle) *
+-          minDiff.normalized();
++      double minDiffNorm = minDiff.norm();
++      if (minDiffNorm > 0.001) {
++        double distance = minDiffNorm - agent.radius;
++        agent.forces.obstacleForce +=
++            agent.params.forceFactorObstacle *
++            std::exp(-distance / agent.params.forceSigmaObstacle) *
++            (minDiff / minDiffNorm);
++      }
+     }
+     for (unsigned i = 0; i < agent.obstacles2.size(); i++) {
+       utils::Vector2d minDiff = agent.position - agent.obstacles2[i];
+-      double distance = minDiff.norm() - agent.radius;
+-      agent.forces.obstacleForce +=
+-          agent.params.forceFactorObstacle *
+-          std::exp(-distance / agent.params.forceSigmaObstacle) *
+-          minDiff.normalized();
++      double minDiffNorm = minDiff.norm();
++      if (minDiffNorm > 0.001) {
++        double distance = minDiffNorm - agent.radius;
++        agent.forces.obstacleForce +=
++            agent.params.forceFactorObstacle *
++            std::exp(-distance / agent.params.forceSigmaObstacle) *
++            (minDiff / minDiffNorm);
++      }
+     }
+     //agent.forces.obstacleForce /=
+     //    (double)(agent.obstacles1.size() + agent.obstacles2.size());
+   } else if (map != NULL) {
+     const Map::Obstacle &obs = map->getNearestObstacle(agent.position);
+     utils::Vector2d minDiff = agent.position - obs.position;
+-    double distance = minDiff.norm() - agent.radius;
+-    agent.forces.obstacleForce =
+-        agent.params.forceFactorObstacle *
+-        std::exp(-distance / agent.params.forceSigmaObstacle) *
+-        minDiff.normalized();
++    double minDiffNorm = minDiff.norm();
++    if (minDiffNorm > 0.001) {
++      double distance = minDiffNorm - agent.radius;
++      agent.forces.obstacleForce =
++          agent.params.forceFactorObstacle *
++          std::exp(-distance / agent.params.forceSigmaObstacle) *
++          (minDiff / minDiffNorm);
++    } else {
++      agent.forces.obstacleForce.set(0, 0);
++    }
+   } else {
+     agent.forces.obstacleForce.set(0, 0);
+   }
+@@ -244,8 +255,9 @@ SocialForceModel::computeSocialForce(unsigned index,
+       continue;
+     }
+     utils::Vector2d diff = agents[i].position - agent.position;
+-
+-    utils::Vector2d diffDirection = diff.normalized();
++    double diffNorm = diff.norm();
++    if (diffNorm < 0.001) continue;
++    utils::Vector2d diffDirection = diff / diffNorm;
+     utils::Vector2d velDiff = agent.velocity - agents[i].velocity;
+     utils::Vector2d interactionVector =
+         agent.params.lambda * velDiff + diffDirection;
+@@ -284,7 +296,9 @@ SocialForceModel::computeSocialForce(Agent &me,
+       continue;
+     }
+     utils::Vector2d diff = agents[i].position - me.position;
+-    utils::Vector2d diffDirection = diff.normalized();
++    double diffNorm = diff.norm();
++    if (diffNorm < 0.001) continue;
++    utils::Vector2d diffDirection = diff / diffNorm;
+     utils::Vector2d velDiff = me.velocity - agents[i].velocity;
+     utils::Vector2d interactionVector =
+         me.params.lambda * velDiff + diffDirection;
