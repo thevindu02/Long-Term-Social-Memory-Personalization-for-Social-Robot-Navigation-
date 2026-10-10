@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 install(DIRECTORY
   launch
   worlds
+  maps
   DESTINATION share/${PROJECT_NAME}
 )
 

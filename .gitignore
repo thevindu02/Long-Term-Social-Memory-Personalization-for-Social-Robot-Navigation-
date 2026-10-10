@@ -12,3 +12,10 @@ __pycache__/
 sg_env/
 *.log
 
+gazebo_workspace/build/
+gazebo_workspace/install/
+gazebo_workspace/log/
+gazebo_workspace/frames_*
+__pycache__/
+*.pyc
+gazebo_workspace/src/social_nav_env/worlds/models/aws_robomaker_*/

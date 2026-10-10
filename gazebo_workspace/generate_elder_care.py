@@ -142,7 +142,7 @@ sdf_content = """<?xml version="1.0" ?>
     <physics name="default" type="ode">
       <max_step_size>0.01</max_step_size>
       <real_time_factor>1.0</real_time_factor>
-      <real_time_update_rate>100</real_time_update_rate>
+      <real_time_update_rate>1000</real_time_update_rate>
     </physics>
     <plugin filename="libignition-gazebo-physics-system.so" name="ignition::gazebo::systems::Physics"/>
     <plugin filename="libignition-gazebo-user-commands-system.so" name="ignition::gazebo::systems::UserCommands"/>
@@ -276,7 +276,7 @@ sdf_content += """
         <odom_frame>odom</odom_frame>
         <robot_base_frame>base_link</robot_base_frame>
         <odom_topic>/odom</odom_topic>
-        <tf_topic>/dummy_tf</tf_topic>
+        <tf_topic>/tf</tf_topic>
         <odom_publish_frequency>20</odom_publish_frequency>
       </plugin>
     </model>
