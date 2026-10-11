@@ -156,14 +156,7 @@ def generate_launch_description():
     static_tf_footprint = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'simple_robot', 'base_link'],
-        output='screen'
-    )
-
-    static_tf_map_odom = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'],
+        arguments=['0', '0', '0', '0', '0', '0', 'base_link', 'base_footprint'],
         output='screen'
     )
 
@@ -190,6 +183,5 @@ def generate_launch_description():
         bridge,
         static_tf_lidar,
         static_tf_footprint,
-        static_tf_map_odom,
         nav2
     ])
