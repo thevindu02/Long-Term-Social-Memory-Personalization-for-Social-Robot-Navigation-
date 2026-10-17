@@ -1,0 +1,92 @@
+{
+  "run_id": "eval_doorway",
+  "scenario": "doorway",
+  "seed": 42,
+  "git_commit": "unknown",
+  "sim_duration": 16.205,
+  "wall_duration": 54.64102482795715,
+  "mean_rtf": 0.29887423650055994,
+  "min_rtf": 0.0,
+  "min_robot_human_dist": 0.3870741789027274,
+  "contact_events": 17,
+  "first_encounter": {
+    "robot": [
+      2.9829016617093265,
+      -0.5184012186389132
+    ],
+    "human": [
+      3.009406726621538,
+      -3.5037460907879097
+    ],
+    "distance": 2.985462531021334
+  },
+  "doorway_interaction": "pass",
+  "profiles": {
+    "sensitive": {
+      "profile_name": "Sensitive",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 4.340000000000001,
+      "total_approach_violation_time": 5.3500000000000005,
+      "any_irregularity_violated": true,
+      "overall_episode_violated": true,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3870741789027274,
+          "contact_events": 17,
+          "proxemics_violation_time": 4.340000000000001,
+          "max_approach_speed": 0.25966342429445477,
+          "approach_violation_time": 5.3500000000000005,
+          "detour_ratio": 0.0,
+          "max_angular_deviation_deg": 149.93290192266073,
+          "max_lateral_deviation_m": 0.3782303478611152,
+          "irregularity_violated": true,
+          "overall_violated": true
+        }
+      }
+    },
+    "balanced": {
+      "profile_name": "Balanced",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 3.029,
+      "total_approach_violation_time": 5.148000000000001,
+      "any_irregularity_violated": true,
+      "overall_episode_violated": true,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3870741789027274,
+          "contact_events": 17,
+          "proxemics_violation_time": 3.029,
+          "max_approach_speed": 0.25966342429445477,
+          "approach_violation_time": 5.148000000000001,
+          "detour_ratio": 0.0,
+          "max_angular_deviation_deg": 149.93290192266073,
+          "max_lateral_deviation_m": 0.3782303478611152,
+          "irregularity_violated": true,
+          "overall_violated": true
+        }
+      }
+    },
+    "tolerant": {
+      "profile_name": "Tolerant",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 2.221,
+      "total_approach_violation_time": 4.340000000000001,
+      "any_irregularity_violated": true,
+      "overall_episode_violated": true,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3870741789027274,
+          "contact_events": 17,
+          "proxemics_violation_time": 2.221,
+          "max_approach_speed": 0.25966342429445477,
+          "approach_violation_time": 4.340000000000001,
+          "detour_ratio": 0.0,
+          "max_angular_deviation_deg": 149.93290192266073,
+          "max_lateral_deviation_m": 0.3782303478611152,
+          "irregularity_violated": true,
+          "overall_violated": true
+        }
+      }
+    }
+  }
+}
