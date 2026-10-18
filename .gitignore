@@ -27,3 +27,4 @@ gazebo_workspace/src/hunav_gazebo_fortress_wrapper/
 gazebo_workspace/src/hunav_sim/
 gazebo_workspace/src/lightsfm/
 gazebo_workspace/src/people/
+gazebo_workspace/evaluation_results/

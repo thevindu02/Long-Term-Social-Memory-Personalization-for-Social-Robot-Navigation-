@@ -6,7 +6,7 @@ import csv
 from collections import defaultdict
 import numpy as np
 
-OUTPUT_DIR = "/home/thevindu/SocialGym2/gazebo_workspace/evaluation_results"
+OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "evaluation_results"))
 CSV_PATH = os.path.join(OUTPUT_DIR, "batch_results_all.csv")
 PLOT_PATH = os.path.join(OUTPUT_DIR, "batch_violation_times.png")
 
