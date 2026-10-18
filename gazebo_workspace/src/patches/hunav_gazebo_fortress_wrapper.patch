@@ -1,5 +1,5 @@
 diff --git a/src/HuNavActorPlugin_fortress.cpp b/src/HuNavActorPlugin_fortress.cpp
-index 0c0dee2..5c10222 100644
+index 0c0dee2..04ab7cb 100644
 --- a/src/HuNavActorPlugin_fortress.cpp
 +++ b/src/HuNavActorPlugin_fortress.cpp
 @@ -798,29 +798,6 @@ void HuNavActorPluginIGN::getHumanObstacles(const gz::sim::EntityComponentManage
@@ -32,8 +32,32 @@ index 0c0dee2..5c10222 100644
    }
  
    // we do not consider obstacles further than 10 m
+@@ -1650,13 +1627,16 @@ void HuNavActorPluginIGN::PreUpdate(const gz::sim::UpdateInfo& _info, gz::sim::E
+       // auto agents = updated_agents.agents;
+       //for (const auto& a : agents)
+       //{
+-      double goalx = updated_agent.goals[0].position.x;
+-      double goaly = updated_agent.goals[0].position.y;
+-      double currx = updated_agent.position.position.x;
+-      double curry = updated_agent.position.position.y;
+-      double dist = sqrt(pow(goalx - currx, 2) + pow(goaly - curry, 2));
+-      RCLCPP_INFO(rosnode_->get_logger(), "Agent %s. Goal: %.2f, %.2f, Current pos:[%.2f, %.2f], Dist: %.2f\n",
+-        updated_agent.name.c_str(), goalx, goaly, currx, curry, dist);
++      if (!updated_agent.goals.empty())
++      {
++        double goalx = updated_agent.goals[0].position.x;
++        double goaly = updated_agent.goals[0].position.y;
++        double currx = updated_agent.position.position.x;
++        double curry = updated_agent.position.position.y;
++        double dist = sqrt(pow(goalx - currx, 2) + pow(goaly - curry, 2));
++        RCLCPP_INFO(rosnode_->get_logger(), "Agent %s. Goal: %.2f, %.2f, Current pos:[%.2f, %.2f], Dist: %.2f\n",
++          updated_agent.name.c_str(), goalx, goaly, currx, curry, dist);
++      }
+       //}
+     }
+     //updateGazeboPedestrians(_ecm, _info, updated_agents);
 diff --git a/src/HuNavSystemPlugin_fortress.cpp b/src/HuNavSystemPlugin_fortress.cpp
-index 426261f..b8971ca 100644
+index 426261f..0d093a1 100644
 --- a/src/HuNavSystemPlugin_fortress.cpp
 +++ b/src/HuNavSystemPlugin_fortress.cpp
 @@ -676,9 +676,14 @@ void HuNavSystemPluginIGN::getObstacles(const gz::sim::EntityComponentManager& _
@@ -97,6 +121,17 @@ index 426261f..b8971ca 100644
    std::vector<hunav_msgs::msg::Agent> vector;
    vector.reserve(pedestrians_.size()); // Reserve space to avoid multiple allocations
    for (const auto& pair : pedestrians_)
+@@ -1370,6 +1347,10 @@ void HuNavSystemPluginIGN::PreUpdate(const gz::sim::UpdateInfo& _info, gz::sim::
+       auto agents = updated_agents.agents;
+       for (const auto& a : agents)
+       {
++        if (a.goals.empty())
++        {
++          continue;
++        }
+         double goalx = a.goals[0].position.x;
+         double goaly = a.goals[0].position.y;
+         double currx = a.position.position.x;
 diff --git a/src/WorldGenerator.cpp b/src/WorldGenerator.cpp
 index 13e3bf2..dd565d4 100755
 --- a/src/WorldGenerator.cpp

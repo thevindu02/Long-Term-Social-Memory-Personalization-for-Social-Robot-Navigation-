@@ -1,0 +1,114 @@
+{
+  "run_id": "doorway_j20",
+  "scenario": "doorway",
+  "mode": "robot_present",
+  "seed": 42,
+  "jitter": 2.0,
+  "git_commit": "unknown",
+  "sim_duration": 18.705000000000002,
+  "wall_duration": 51.72685098648071,
+  "mean_rtf": 0.3667589194615728,
+  "min_rtf": 0.04375028945697145,
+  "nav2_final_status": "SUCCEEDED",
+  "robot_final_pose": [
+    2.9862243140359856,
+    -3.853850112216892
+  ],
+  "dist_to_goal": 0.14679768125823425,
+  "min_robot_human_dist": 0.3793928140231255,
+  "contact_events": 17,
+  "first_encounter": {
+    "robot": [
+      2.990318847693758,
+      -0.3261841117666493
+    ],
+    "human": [
+      3.008207007125891,
+      -3.311664818549554
+    ],
+    "distance": 2.9855342967081824
+  },
+  "human_logging_start_relative": 0.10000000000000009,
+  "abort_logs": [],
+  "doorway_interaction": "pass",
+  "profiles": {
+    "sensitive": {
+      "profile_name": "Sensitive",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 4.341000000000001,
+      "total_approach_violation_time": 5.3500000000000005,
+      "total_angular_violation_time": 2.119999999999999,
+      "any_irregularity_violated": true,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3793928140231255,
+          "contact_events": 17,
+          "proxemics_violation_time": 4.341000000000001,
+          "max_approach_speed": 0.25968732149179385,
+          "approach_violation_time": 5.3500000000000005,
+          "detour_ratio": 0.0,
+          "angular_violation_time": 2.119999999999999,
+          "max_angular_deviation_deg": 29.218245027066136,
+          "max_lateral_deviation_m": 0.37683824219326606,
+          "proxemics_violated": true,
+          "approach_violated": true,
+          "irregularity_violated": true,
+          "contact_violated": true,
+          "overall_violated": true
+        }
+      }
+    },
+    "balanced": {
+      "profile_name": "Balanced",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 3.029,
+      "total_approach_violation_time": 5.047,
+      "total_angular_violation_time": 1.5149999999999988,
+      "any_irregularity_violated": true,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3793928140231255,
+          "contact_events": 17,
+          "proxemics_violation_time": 3.029,
+          "max_approach_speed": 0.25968732149179385,
+          "approach_violation_time": 5.047,
+          "detour_ratio": 0.0,
+          "angular_violation_time": 1.5149999999999988,
+          "max_angular_deviation_deg": 29.218245027066136,
+          "max_lateral_deviation_m": 0.37683824219326606,
+          "proxemics_violated": true,
+          "approach_violated": true,
+          "irregularity_violated": true,
+          "contact_violated": true,
+          "overall_violated": true
+        }
+      }
+    },
+    "tolerant": {
+      "profile_name": "Tolerant",
+      "total_contact_events": 17,
+      "total_proxemics_violation_time": 2.221,
+      "total_approach_violation_time": 4.339999999999999,
+      "total_angular_violation_time": 0.9089999999999989,
+      "any_irregularity_violated": false,
+      "human_results": {
+        "agent1": {
+          "min_distance": 0.3793928140231255,
+          "contact_events": 17,
+          "proxemics_violation_time": 2.221,
+          "max_approach_speed": 0.25968732149179385,
+          "approach_violation_time": 4.339999999999999,
+          "detour_ratio": 0.0,
+          "angular_violation_time": 0.9089999999999989,
+          "max_angular_deviation_deg": 29.218245027066136,
+          "max_lateral_deviation_m": 0.37683824219326606,
+          "proxemics_violated": true,
+          "approach_violated": true,
+          "irregularity_violated": false,
+          "contact_violated": true,
+          "overall_violated": true
+        }
+      }
+    }
+  }
+}
