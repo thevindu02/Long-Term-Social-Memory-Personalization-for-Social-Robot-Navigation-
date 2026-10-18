@@ -450,19 +450,48 @@ def main():
             dt_nominal=0.1
         )
 
+        # Final robot state and distance to goal
+        rx_final = runner.current_robot_state.position.position.x if runner.current_robot_state else float('nan')
+        ry_final = runner.current_robot_state.position.position.y if runner.current_robot_state else float('nan')
+        dist_to_goal = math.hypot(rgx - rx_final, rgy - ry_final) if not math.isnan(rx_final) else float('nan')
+
+        # Abort log lines extraction
+        abort_logs = []
+        if runner.nav_status in ["ABORTED", "CANCELED"]:
+            log_file = "/tmp/sim_launch.log"
+            if os.path.exists(log_file):
+                try:
+                    with open(log_file) as lf:
+                        lines = lf.readlines()
+                    for line in lines[-120:]:
+                        if any(k in line for k in ['bt_navigator', 'controller_server', 'planner_server', 'ABORT', 'abort', 'cancel', 'shutting down', 'Segmentation']):
+                            abort_logs.append(line.strip())
+                except Exception as e:
+                    abort_logs.append(f"Error reading log: {e}")
+
+        # Human logging start time relative to simulation start
+        h_start_rel = runner.samples[0].t - t_start_sim if runner.samples else 0.0
+
         eval_summary_file = os.path.join(args.output_dir, f"evaluation_{args.scenario}_{args.run_id}.json")
         summary_dict = {
             "run_id": args.run_id,
             "scenario": args.scenario,
+            "mode": args.mode,
             "seed": args.seed,
+            "jitter": args.jitter,
             "git_commit": get_git_commit_hash(),
             "sim_duration": sim_elapsed,
             "wall_duration": wall_elapsed,
             "mean_rtf": mean_rtf,
             "min_rtf": min_rtf,
+            "nav2_final_status": runner.nav_status,
+            "robot_final_pose": [rx_final, ry_final],
+            "dist_to_goal": dist_to_goal,
             "min_robot_human_dist": min_robot_human_dist,
             "contact_events": contact_events,
             "first_encounter": first_encounter_pos,
+            "human_logging_start_relative": h_start_rel,
+            "abort_logs": abort_logs,
             "doorway_interaction": "standoff" if args.scenario == "doorway" and contact_events == 0 else "pass",
             "profiles": {
                 p: {
@@ -470,8 +499,8 @@ def main():
                     "total_contact_events": s.total_contact_events,
                     "total_proxemics_violation_time": s.total_proxemics_violation_time,
                     "total_approach_violation_time": s.total_approach_violation_time,
+                    "total_angular_violation_time": s.total_angular_violation_time,
                     "any_irregularity_violated": s.any_irregularity_violated,
-                    "overall_episode_violated": s.overall_episode_violated,
                     "human_results": {
                         h: {
                             "min_distance": hr.min_distance,
@@ -480,9 +509,13 @@ def main():
                             "max_approach_speed": hr.max_approach_speed,
                             "approach_violation_time": hr.approach_violation_time,
                             "detour_ratio": hr.detour_ratio,
+                            "angular_violation_time": hr.angular_violation_time,
                             "max_angular_deviation_deg": hr.max_angular_deviation_deg,
                             "max_lateral_deviation_m": hr.max_lateral_deviation_m,
+                            "proxemics_violated": hr.proxemics_violated,
+                            "approach_violated": hr.approach_violated,
                             "irregularity_violated": hr.irregularity_violated,
+                            "contact_violated": hr.contact_violated,
                             "overall_violated": hr.overall_violated
                         }
                         for h, hr in s.human_results.items()

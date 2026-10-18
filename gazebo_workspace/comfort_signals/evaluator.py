@@ -16,6 +16,8 @@ from .signals import (
     compute_polyline_length,
     compute_detour_ratio,
     compute_angular_deviation,
+    project_point_to_polyline,
+    wrap_to_pi,
 )
 from .profiles import ComfortProfile, PROFILES, get_profile
 
@@ -39,9 +41,14 @@ class HumanEvaluationResult:
     actual_path_length: float
     nominal_path_length: float
     detour_ratio: float
+    angular_violation_time: float
+    angular_violation_samples: int
     max_angular_deviation_deg: float
     max_lateral_deviation_m: float
     irregularity_violated: bool
+    proxemics_violated: bool
+    approach_violated: bool
+    contact_violated: bool
     overall_violated: bool
 
 @dataclass
@@ -58,6 +65,7 @@ class EpisodeSummary:
     total_contact_events: int
     total_proxemics_violation_time: float
     total_approach_violation_time: float
+    total_angular_violation_time: float
     any_irregularity_violated: bool
     overall_episode_violated: bool
 
@@ -72,6 +80,74 @@ def get_git_commit_hash() -> str:
         return out
     except Exception:
         return "unknown"
+
+def extract_smoothed_motion_headings(
+    samples: List[TimeSample],
+    agent_name: str,
+    window_size: int = 5,
+    min_speed: float = 0.10
+) -> List[Tuple[float, float, bool]]:
+    """
+    Computes smoothed motion heading from displacement/velocity for agent_name.
+    Returns list of (speed, smoothed_heading_rad, is_valid) for each sample.
+    """
+    speeds = []
+    raw_headings = []
+
+    for i, s in enumerate(samples):
+        if agent_name not in s.human_states:
+            speeds.append(0.0)
+            raw_headings.append(0.0)
+            continue
+        h = s.human_states[agent_name]
+        vx, vy = h.get('vel', (0.0, 0.0))
+        spd = math.hypot(vx, vy)
+        speeds.append(spd)
+
+        if i > 0 and agent_name in samples[i - 1].human_states:
+            prev_pos = samples[i - 1].human_states[agent_name]['pos']
+            curr_pos = h['pos']
+            dx = curr_pos[0] - prev_pos[0]
+            dy = curr_pos[1] - prev_pos[1]
+            dt = s.t - samples[i - 1].t
+            if dt > 1e-4 and math.hypot(dx, dy) / dt > 0.05:
+                heading = math.atan2(dy, dx)
+            elif spd > 1e-4:
+                heading = math.atan2(vy, vx)
+            else:
+                heading = h.get('heading', 0.0)
+        elif spd > 1e-4:
+            heading = math.atan2(vy, vx)
+        else:
+            heading = h.get('heading', 0.0)
+        raw_headings.append(heading)
+
+    n = len(samples)
+    results = []
+    half_w = window_size // 2
+
+    for i in range(n):
+        spd = speeds[i]
+        is_valid = (spd > min_speed)
+        w_start = max(0, i - half_w)
+        w_end = min(n, i + half_w + 1)
+
+        sin_sum = 0.0
+        cos_sum = 0.0
+        valid_cnt = 0
+        for j in range(w_start, w_end):
+            if speeds[j] > min_speed:
+                sin_sum += math.sin(raw_headings[j])
+                cos_sum += math.cos(raw_headings[j])
+                valid_cnt += 1
+
+        if valid_cnt > 0:
+            smoothed = math.atan2(sin_sum, cos_sum)
+        else:
+            smoothed = raw_headings[i]
+        results.append((spd, smoothed, is_valid))
+
+    return results
 
 class TrajectoryEvaluator:
     def __init__(self, profile: ComfortProfile):
@@ -114,7 +190,11 @@ class TrajectoryEvaluator:
         total_contacts = 0
         total_prox_time = 0.0
         total_app_time = 0.0
+        total_ang_time = 0.0
         any_irreg = False
+
+        is_corridor = scenario_name.lower().startswith("corridor")
+        is_doorway = scenario_name.lower().startswith("doorway")
 
         for name in sorted(agent_names):
             min_dist = float('inf')
@@ -124,12 +204,15 @@ class TrajectoryEvaluator:
             max_app_speed = 0.0
             app_violation_time = 0.0
             app_violation_samples = 0
+            angular_violation_time = 0.0
+            angular_violation_samples = 0
 
             actual_polyline: List[Tuple[float, float]] = []
             max_ang_dev = 0.0
             max_lat_dev = 0.0
 
             nom_poly = nominal_human_paths.get(name, [])
+            smoothed_headings = extract_smoothed_motion_headings(samples, name, window_size=5, min_speed=0.10)
 
             for idx, s in enumerate(samples):
                 if name not in s.human_states:
@@ -137,7 +220,6 @@ class TrajectoryEvaluator:
 
                 h_data = s.human_states[name]
                 h_pos = h_data['pos']
-                h_heading = h_data.get('heading', 0.0)
                 actual_polyline.append(h_pos)
 
                 # Time step weight
@@ -172,19 +254,27 @@ class TrajectoryEvaluator:
                     app_violation_time += dt
                     app_violation_samples += 1
 
-                # 3. Angular & Lateral deviation (geometric, gated by d < d_active)
+                # 3. Angular & Lateral deviation (geometric, gated by d < d_active and speed > 0.10, before goal)
+                spd, smoothed_heading, is_valid_speed = smoothed_headings[idx]
+                at_goal = False
+                if is_corridor and h_pos[0] <= -8.0:
+                    at_goal = True
+                elif is_doorway and h_pos[1] >= 0.5:
+                    at_goal = True
+
                 if len(nom_poly) >= 2:
-                    ang_dev, lat_dev = compute_angular_deviation(
-                        h_heading,
-                        nom_poly,
-                        h_pos,
-                        robot_pos=s.robot_pos,
-                        d_active=self.profile.d_active
-                    )
-                    if ang_dev > max_ang_dev:
-                        max_ang_dev = ang_dev
+                    _, lat_dev, nom_tang = project_point_to_polyline(h_pos, nom_poly)
                     if lat_dev > max_lat_dev:
                         max_lat_dev = lat_dev
+
+                    if dist < self.profile.d_active and is_valid_speed and not at_goal:
+                        ang_dev = abs(math.degrees(wrap_to_pi(smoothed_heading - nom_tang)))
+                        if ang_dev > max_ang_dev:
+                            max_ang_dev = ang_dev
+
+                        if ang_dev > self.profile.angular_deviation_threshold_deg:
+                            angular_violation_time += dt
+                            angular_violation_samples += 1
 
             # Polyline lengths & Detour ratio
             actual_len = compute_polyline_length(actual_polyline)
@@ -195,17 +285,20 @@ class TrajectoryEvaluator:
                 min_nominal_length=self.profile.min_nominal_path_length
             )
 
-            # Irregularity violation: OR logic between Detour ratio and Angular deviation
+            # Irregularity violation: OR logic between Detour ratio and Time-in-violation
             irreg_violated = (
                 detour > self.profile.detour_ratio_threshold or
-                max_ang_dev > self.profile.angular_deviation_threshold_deg
+                angular_violation_time > self.profile.angular_time_threshold_sec
             )
 
+            prox_violated = (prox_violation_samples > 0)
+            approach_violated = (app_violation_samples > 0)
+            contact_violated = (contact_events > 0)
             overall_violated = (
-                prox_violation_samples > 0 or
-                app_violation_samples > 0 or
+                prox_violated or
+                approach_violated or
                 irreg_violated or
-                contact_events > 0
+                contact_violated
             )
 
             res = HumanEvaluationResult(
@@ -220,9 +313,14 @@ class TrajectoryEvaluator:
                 actual_path_length=actual_len,
                 nominal_path_length=nom_len,
                 detour_ratio=detour,
+                angular_violation_time=angular_violation_time,
+                angular_violation_samples=angular_violation_samples,
                 max_angular_deviation_deg=max_ang_dev,
                 max_lateral_deviation_m=max_lat_dev,
                 irregularity_violated=irreg_violated,
+                proxemics_violated=prox_violated,
+                approach_violated=approach_violated,
+                contact_violated=contact_violated,
                 overall_violated=overall_violated
             )
             human_results[name] = res
@@ -230,6 +328,7 @@ class TrajectoryEvaluator:
             total_contacts += contact_events
             total_prox_time += prox_violation_time
             total_app_time += app_violation_time
+            total_ang_time += angular_violation_time
             if irreg_violated:
                 any_irreg = True
 
@@ -248,6 +347,7 @@ class TrajectoryEvaluator:
             total_contact_events=total_contacts,
             total_proxemics_violation_time=total_prox_time,
             total_approach_violation_time=total_app_time,
+            total_angular_violation_time=total_ang_time,
             any_irregularity_violated=any_irreg,
             overall_episode_violated=overall_ep_violated
         )
