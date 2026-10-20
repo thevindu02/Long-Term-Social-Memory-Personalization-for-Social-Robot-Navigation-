@@ -47,7 +47,7 @@ def generate_figure_2a():
     r3 = ax1.bar(x + width, corr_tol, width, label='Tolerant (d_pref=0.70m)', color='#d95f02', edgecolor='black', linewidth=1)
 
     ax1.set_ylabel('Proxemics Violation Time (s)', fontsize=15, fontweight='bold')
-    ax1.set_xlabel('Scenario Variation (Human Start Delay)', fontsize=15, fontweight='bold')
+    ax1.set_xlabel('Robot dispatch jitter', fontsize=15, fontweight='bold')
     ax1.set_title('Corridor Scenario: Proxemics Violation Time', fontsize=16, fontweight='bold', pad=12)
     ax1.set_xticks(x)
     ax1.set_xticklabels(episodes, fontweight='bold')
@@ -72,7 +72,7 @@ def generate_figure_2a():
     r6 = ax2.bar(x + width, door_tol, width, label='Tolerant (d_pref=0.70m)', color='#d95f02', edgecolor='black', linewidth=1)
 
     ax2.set_ylabel('Proxemics Violation Time (s)', fontsize=15, fontweight='bold')
-    ax2.set_xlabel('Scenario Variation (Human Start Delay)', fontsize=15, fontweight='bold')
+    ax2.set_xlabel('Robot dispatch jitter', fontsize=15, fontweight='bold')
     ax2.set_title('Doorway Scenario: Proxemics Violation Time', fontsize=16, fontweight='bold', pad=12)
     ax2.set_xticks(x)
     ax2.set_xticklabels(episodes, fontweight='bold')
@@ -136,6 +136,7 @@ def generate_figure_2b():
     # 1. Doorway j00 Subplot
     ax1 = axes[0]
     ax1.plot(t00, dist00, color='#1f77b4', linewidth=3.5, label='Robot-Human Center Distance', zorder=5)
+    ax1.plot(t00[-1], dist00[-1], 'o', color='#1f77b4', markersize=8, zorder=6, label='Goal Reached (t=16.1s)')
 
     # Reference lines
     ax1.axhline(d_sens, color='#9467bd', linestyle='--', linewidth=2.0, label='d_pref Sensitive (1.20 m)', zorder=3)
@@ -143,36 +144,24 @@ def generate_figure_2b():
     ax1.axhline(d_tol, color='#ff7f0e', linestyle=':', linewidth=2.2, label='d_pref Tolerant (0.70 m)', zorder=3)
     ax1.axhline(d_contact, color='#d62728', linestyle='-', linewidth=2.5, label='Contact Boundary (0.60 m)', zorder=4)
 
-    # Highlight contact region
+    # Highlight contact region (17 samples, 1.72s duration by dt sum, 1.62s timestamp span)
     contact_mask00 = dist00 < d_contact
     if np.any(contact_mask00):
         t_c_start = t00[contact_mask00][0]
         t_c_end = t00[contact_mask00][-1]
-        ax1.axvspan(t_c_start, t_c_end, color='#d62728', alpha=0.20, label=f'Physical Contact Episode ({t_c_end - t_c_start:.2f} s)')
-
-    # Stationary mask
-    stat_mask00 = sp00 < 0.03
-    # Check stationary spans
-    in_stat = False
-    s_start = None
-    for i, is_s in enumerate(stat_mask00):
-        if is_s and not in_stat:
-            in_stat = True
-            s_start = t00[i]
-        elif not is_s and in_stat:
-            in_stat = False
-            if t00[i] - s_start > 0.5:
-                ax1.axvspan(s_start, t00[i], color='#7f7f7f', alpha=0.25, hatch='//')
-    if in_stat and (t00[-1] - s_start > 0.5):
-        ax1.axvspan(s_start, t00[-1], color='#7f7f7f', alpha=0.25, hatch='//')
+        c_count = np.sum(contact_mask00)
+        c_dur = c_count * 0.1010
+        ax1.axvspan(t_c_start, t_c_end, color='#d62728', alpha=0.20,
+                    label=f'Physical Contact ({c_count} samples, {c_dur:.2f} s duration, {t_c_end - t_c_start:.2f} s span)')
 
     ax1.set_title('Episode doorway_j00 (Jitter = 0.0 s): Simultaneous Doorway Entry with Physical Contact',
                   fontsize=16, fontweight='bold', pad=10)
-    ax1.set_ylabel('Distance (meters)', fontsize=15, fontweight='bold')
-    ax1.set_xlim([0, 18.0])
-    ax1.set_ylim([0.0, 5.0])
+    ax1.set_ylabel('Center-to-Center Distance (meters)', fontsize=15, fontweight='bold')
+    ax1.set_xlim([0, t00[-1] + 0.5])
+    ax1.set_ylim([0.0, 5.7])
     ax1.grid(True, linestyle=':', alpha=0.6)
-    ax1.legend(loc='upper right', frameon=True, facecolor='#ffffff', edgecolor='#cccccc', fontsize=12)
+    ax1.legend(loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=3, frameon=True,
+               facecolor='#ffffff', edgecolor='#cccccc', fontsize=11, framealpha=0.95)
 
     # Annotation for min distance
     min_d00 = np.min(dist00)
@@ -186,43 +175,40 @@ def generate_figure_2b():
     # 2. Doorway j15 Subplot
     ax2 = axes[1]
     ax2.plot(t15, dist15, color='#1f77b4', linewidth=3.5, label='Robot-Human Center Distance', zorder=5)
+    ax2.plot(t15[-1], dist15[-1], 'o', color='#1f77b4', markersize=8, zorder=6, label='Goal Reached (t=37.0s)')
 
     ax2.axhline(d_sens, color='#9467bd', linestyle='--', linewidth=2.0, label='d_pref Sensitive (1.20 m)', zorder=3)
     ax2.axhline(d_bal, color='#2ca02c', linestyle='-.', linewidth=2.0, label='d_pref Balanced (0.90 m)', zorder=3)
     ax2.axhline(d_tol, color='#ff7f0e', linestyle=':', linewidth=2.2, label='d_pref Tolerant (0.70 m)', zorder=3)
     ax2.axhline(d_contact, color='#d62728', linestyle='-', linewidth=2.5, label='Contact Boundary (0.60 m)', zorder=4)
 
-    # Stationary span for j15
-    stat_mask15 = sp15 < 0.03
-    in_stat = False
-    s_start = None
-    first_stat_labeled = False
-    for i, is_s in enumerate(stat_mask15):
-        if is_s and not in_stat:
-            in_stat = True
-            s_start = t15[i]
-        elif not is_s and in_stat:
-            in_stat = False
-            if t15[i] - s_start > 1.0:
-                lbl = 'Robot Stationary / Yielding Outside Door' if not first_stat_labeled else None
-                ax2.axvspan(s_start, t15[i], color='#ffbb33', alpha=0.35, hatch='\\\\', label=lbl)
-                first_stat_labeled = True
-    if in_stat and (t15[-1] - s_start > 1.0):
-        lbl = 'Robot Stationary' if not first_stat_labeled else None
-        ax2.axvspan(s_start, t15[-1], color='#ffbb33', alpha=0.35, hatch='\\\\', label=lbl)
+    # Stationary spans for j15:
+    # 0.0 - 1.81s: Pre-dispatch waiting (due to 1.5s jitter)
+    ax2.axvspan(0.0, 1.81, color='#b0bec5', alpha=0.30,
+                label='Pre-dispatch Waiting (1.5s Jitter, 1.81 s)')
+
+    # 6.86 - 14.73s: True Standoff Yielding outside doorway
+    ax2.axvspan(6.86, 14.73, color='#ffbb33', alpha=0.40, hatch='\\\\',
+                label='Robot Standoff Yielding Outside Door (7.87 s, dist=0.65-1.10m)')
+
+    # 17.45 - 26.60s: Post-encounter wait inside room / near goal
+    ax2.axvspan(17.45, 26.60, color='#cfd8dc', alpha=0.25, hatch='//',
+                label='Post-encounter In-room Pause (9.16 s)')
 
     ax2.set_title('Episode doorway_j15 (Jitter = 1.5 s): Standoff Yielding (Zero Contact, Min Dist = 0.65 m)',
                   fontsize=16, fontweight='bold', pad=10)
     ax2.set_xlabel('Simulation Time (seconds)', fontsize=15, fontweight='bold')
-    ax2.set_ylabel('Distance (meters)', fontsize=15, fontweight='bold')
-    ax2.set_xlim([0, 38.0])
+    ax2.set_ylabel('Center-to-Center Distance (meters)', fontsize=15, fontweight='bold')
+    ax2.set_xlim([0, t15[-1] + 0.5])
+    ax2.set_ylim([0.0, 5.7])
     ax2.grid(True, linestyle=':', alpha=0.6)
-    ax2.legend(loc='upper right', frameon=True, facecolor='#ffffff', edgecolor='#cccccc', fontsize=12)
+    ax2.legend(loc='upper center', bbox_to_anchor=(0.5, 0.98), ncol=3, frameon=True,
+               facecolor='#ffffff', edgecolor='#cccccc', fontsize=11, framealpha=0.95)
 
     # Annotation for min distance
     min_d15 = np.min(dist15)
     t_min15 = t15[np.argmin(dist15)]
-    ax2.annotate(f'Min Distance: {min_d15:.2f} m\n(Safe: > 0.60 m)',
+    ax2.annotate(f'Min Distance: {min_d15:.2f} m\n(Safe Clearance > 0.60 m)',
                  xy=(t_min15, min_d15), xytext=(t_min15 + 2.5, min_d15 + 0.9),
                  arrowprops=dict(arrowstyle="->", color='#2ca02c', lw=2),
                  color='#2ca02c', fontsize=13, fontweight='bold',
