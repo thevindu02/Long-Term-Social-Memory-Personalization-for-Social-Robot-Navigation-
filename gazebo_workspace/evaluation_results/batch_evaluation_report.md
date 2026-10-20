@@ -34,19 +34,31 @@
   - Because trajectory logging begins after AMCL settling ($t \approx 1.7 - 2.2\text{ s}$ sim time), Sample 0 records the human after it has already traveled $\sim 0.8\text{ m}$:
     - `corridor_j00`: Sample 0 at $t = 2.20\text{ s}$, Human at **$(8.123, 0.000)$**, initial center-to-center distance $= 17.12\text{ m}$.
     - `corridor_j05` to `j20`: Human at $x = 8.252 - 8.350\text{ m}$, initial distance $= 17.25 - 17.35\text{ m}$.
-- **Actual Robot Departure Times ($v > 0.05\text{ m/s}$)**:
-  - **Corridor**: `j00` $\to 0.40\text{ s}$ ($+0.00\text{ s}$), `j05` $\to 0.80\text{ s}$ ($+0.40\text{ s}$), `j10` $\to 1.31\text{ s}$ ($+0.91\text{ s}$), `j15` $\to 1.71\text{ s}$ ($+1.31\text{ s}$), `j20` $\to 2.32\text{ s}$ ($+1.91\text{ s}$).
-  - **Doorway**: `j00` $\to 0.10\text{ s}$ ($+0.00\text{ s}$), `j05` $\to 0.50\text{ s}$ ($+0.40\text{ s}$), `j10` $\to 1.01\text{ s}$ ($+0.91\text{ s}$), `j15` $\to 1.81\text{ s}$ ($+1.71\text{ s}$), `j20` $\to 2.01\text{ s}$ ($+1.91\text{ s}$).
+
+### Complete Departure & Initial Position Timetable Across All 10 Episodes
+
+| Episode | Logging Start (Sim Time) | Robot Departure (Sim Time) | Relative Departure ($\Delta t$) | Human $x$ at Departure | Human $y$ at Departure |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| `corridor_j00` | 2.202 s | 2.603 s | +0.401 s | 7.943 m | 0.000 m |
+| `corridor_j05` | 1.917 s | 2.720 s | +0.803 s | 7.890 m | -0.000 m |
+| `corridor_j10` | 1.798 s | 3.107 s | +1.309 s | 7.716 m | -0.000 m |
+| `corridor_j15` | 1.772 s | 3.482 s | +1.710 s | 7.547 m | -0.000 m |
+| `corridor_j20` | 1.699 s | 4.014 s | +2.315 s | 7.308 m | -0.000 m |
+| `doorway_j00`  | 2.221 s | 2.321 s | +0.100 s | 3.000 m | -4.224 m |
+| `doorway_j05`  | 1.810 s | 2.313 s | +0.503 s | 3.000 m | -4.227 m |
+| `doorway_j10`  | 1.820 s | 2.825 s | +1.005 s | 3.001 m | -4.048 m |
+| `doorway_j15`  | 1.784 s | 3.595 s | +1.811 s | 3.001 m | -3.779 m |
+| `doorway_j20`  | 1.727 s | 3.740 s | +2.013 s | 3.001 m | -3.728 m |
 
 ### Empirical Analysis of Encounter Modes:
 1. **Doorway Phase Sensitivity & Two Outcome Modes**:
    - The doorway data exhibits **two distinct outcome modes**:
      - **Collision Mode** (`j00`, `j05`, `j10`, `j20`): Both agents enter the $1.0\text{ m}$ doorway simultaneously, resulting in physical contact ($d_{\text{min}} = 0.38 - 0.39\text{ m} < 0.60\text{ m}$, 17 contact samples, 1.72 s duration).
-     - **Standoff Yielding Mode** (`j15`): Robot departs at $t = 1.81\text{ s}$, reaches $(3.302, -1.114)$ outside the door at $t = 6.86\text{ s}$, and remains stationary ($v < 0.05\text{ m/s}$) for **7.87 s** (until $t = 14.73\text{ s}$) while the human exits through the door. Minimum distance is **$0.6497\text{ m} > 0.60\text{ m}$ (0 physical contacts)**.
-   - **Timing Sensitivity**: `doorway_j15` (departure $1.81\text{ s}$) and `doorway_j20` (departure $2.01\text{ s}$) are separated by only **0.20 s**, yet produce opposite outcomes (clean yield vs collision). This proves that the outcome is **critically sensitive to arrival timing**, rather than staggered dispatch monotonically producing yielding.
+     - **Stand-off/Stall Mode** (`j15`): Robot departs at sim time $3.595\text{ s}$ (relative $1.81\text{ s}$), reaches $(3.302, -1.114)$ outside the door at $t = 6.86\text{ s}$, and remains stationary ($v < 0.05\text{ m/s}$) in a **stand-off/stall for 7.87 s** (until $t = 14.73\text{ s}$) while the human exits through the door. Minimum distance is **$0.6497\text{ m} > 0.60\text{ m}$ (0 physical contacts)**. Later, from $t = 17.45\text{ s}$ to $26.60\text{ s}$, the robot experiences a **second pause (cause unverified)** lasting 9.16 s.
+   - **Timing Sensitivity**: `doorway_j15` (departure $1.81\text{ s}$) and `doorway_j20` (departure $2.01\text{ s}$) are separated by only **0.20 s**, yet produce opposite outcomes (stand-off/stall vs collision). This proves that the outcome is **critically sensitive to arrival timing**, rather than staggered dispatch monotonically producing avoidance.
 2. **Contact vs Comfort Divergence in Doorway**:
    - In `doorway_j15`, even though physical contact was completely eliminated (0 contacts, safe clearance $0.65\text{ m}$), the **proxemics violation time was HIGHER** (Sensitive: **6.46 s**, Balanced: **4.14 s**) than in the collision episodes (Sensitive: 4.24 s, Balanced: 3.03 s).
-   - This occurs because the robot stood stationary at $d \approx 0.65 - 1.10\text{ m}$ while yielding, remaining within the Sensitive ($1.20\text{ m}$) and Balanced ($0.90\text{ m}$) comfort zones for 7.87 s. Contact avoidance and proxemics comfort directly diverge.
+   - This occurs because the robot stood stationary at $d \approx 0.65 - 1.10\text{ m}$ during the stand-off/stall, remaining within the Sensitive ($1.20\text{ m}$) and Balanced ($0.90\text{ m}$) comfort zones for 7.87 s. Contact avoidance and proxemics comfort directly diverge.
 3. **Corridor Duration & Balanced Violation Margin**:
    - Total sim duration is $79.1\text{ s}$ in `j00` vs $94.2 - 103.7\text{ s}$ in `j05 - j20`. The 14–22 s differences correspond to stationary wait time.
    - **Root Cause**: The exact cause of the 14–22 s pauses in the batch runs `corridor_j05–j20` is **not verified** because raw runtime logs were not preserved for those episodes. In a subsequent test run (`rec_test_corridor`), captured logs from `/tmp/sim_launch_rec.log` showed Nav2 DWB trajectory rollout failures (`No valid trajectories out of 419! BaseObstacle/Trajectory Hits Obstacle`). Extending this explanation to `j05–j20` is an **unverified hypothesis**.

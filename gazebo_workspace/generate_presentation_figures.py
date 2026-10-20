@@ -187,15 +187,15 @@ def generate_figure_2b():
     ax2.axvspan(0.0, 1.81, color='#b0bec5', alpha=0.30,
                 label='Pre-dispatch Waiting (1.5s Jitter, 1.81 s)')
 
-    # 6.86 - 14.73s: True Standoff Yielding outside doorway
+    # 6.86 - 14.73s: Stand-off/Stall outside doorway
     ax2.axvspan(6.86, 14.73, color='#ffbb33', alpha=0.40, hatch='\\\\',
-                label='Robot Standoff Yielding Outside Door (7.87 s, dist=0.65-1.10m)')
+                label='Robot Stand-off/Stall Outside Door (7.87 s, dist=0.65-1.10m)')
 
-    # 17.45 - 26.60s: Post-encounter wait inside room / near goal
+    # 17.45 - 26.60s: Second pause (cause unverified)
     ax2.axvspan(17.45, 26.60, color='#cfd8dc', alpha=0.25, hatch='//',
-                label='Post-encounter In-room Pause (9.16 s)')
+                label='Second Pause (Cause Unverified) (9.16 s)')
 
-    ax2.set_title('Episode doorway_j15 (Jitter = 1.5 s): Standoff Yielding (Zero Contact, Min Dist = 0.65 m)',
+    ax2.set_title('Episode doorway_j15 (Jitter = 1.5 s): Stand-off/Stall (Zero Contact, Min Dist = 0.65 m)',
                   fontsize=16, fontweight='bold', pad=10)
     ax2.set_xlabel('Simulation Time (seconds)', fontsize=15, fontweight='bold')
     ax2.set_ylabel('Center-to-Center Distance (meters)', fontsize=15, fontweight='bold')
